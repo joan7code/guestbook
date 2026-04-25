@@ -34,6 +34,10 @@ create table messages (
 -- Enable Row Level Security
 alter table messages enable row level security;
 
+-- Grant permissions to the anon role
+grant select on messages to anon;
+grant insert on messages to anon;
+
 -- Allow anyone to read messages
 create policy "Anyone can read messages"
   on messages for select
@@ -58,6 +62,8 @@ NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 ```
 
+You can find both values in your Supabase project under **Settings → API → Project URL** and **anon / public key**.
+
 ### 4. Run the development server
 
 ```bash
@@ -68,7 +74,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Deployment
 
-Deploy easily on [Vercel](https://vercel.com). Remember to add the environment variables in your Vercel project settings.
+Deploy easily on [Vercel](https://vercel.com). Remember to add the environment variables (`NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`) in your Vercel project settings.
 
 ## Project Structure
 
