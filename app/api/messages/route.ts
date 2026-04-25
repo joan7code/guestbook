@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import { generateWelcomeReply } from '@/lib/groq';
 
 export async function POST(req: NextRequest) {
   try {
@@ -20,9 +21,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Generate AI welcome reply via Groq (non-blocking on failure)
+    const ai_reply = await generateWelcomeReply(name.trim(), message.trim()).catch(
+      () => ''
+    );
+
     const { data, error } = await supabase
       .from('messages')
-      .insert([{ name: name.trim(), message: message.trim() }])
+      .insert([{ name: name.trim(), message: message.trim(), ai_reply }])
       .select()
       .single();
 

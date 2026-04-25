@@ -72,6 +72,16 @@ export default function MessageList({ messages }: Props) {
               <p className="mt-1.5 whitespace-pre-wrap text-sm leading-relaxed text-gray-600">
                 {msg.message}
               </p>
+
+              {/* AI reply */}
+              {msg.ai_reply && (
+                <div className="mt-3 flex items-start gap-2 rounded-xl bg-indigo-50 px-3 py-2.5">
+                  <span className="mt-0.5 text-sm">🤖</span>
+                  <p className="text-sm italic leading-relaxed text-indigo-700">
+                    {msg.ai_reply}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </li>

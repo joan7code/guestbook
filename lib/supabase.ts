@@ -9,5 +9,6 @@ export type Message = {
   id: number;
   name: string;
   message: string;
+  ai_reply: string | null;
   created_at: string;
 };
