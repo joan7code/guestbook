@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
-import { generateWelcomeReply } from '@/lib/groq';
+import { generateWelcomeReply } from '@/lib/gemini';
 
 export async function POST(req: NextRequest) {
   try {
@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Generate AI welcome reply via Groq (non-blocking on failure)
+    // Generate AI welcome reply via Gemini (non-blocking on failure)
     const ai_reply = await generateWelcomeReply(name.trim(), message.trim()).catch(
       () => ''
     );
