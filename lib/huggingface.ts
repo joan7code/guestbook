@@ -1,6 +1,6 @@
 // Using Hugging Face Inference API with Mistral-7B-Instruct
-const HF_API_URL =
-  'https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3';
+const HF_MODEL = 'mistralai/Mistral-7B-Instruct-v0.3';
+const HF_API_URL = `https://router.huggingface.co/hf-inference/models/${HF_MODEL}/v1/chat/completions`;
 
 export async function generateWelcomeReply(
   name: string,
@@ -13,13 +13,6 @@ export async function generateWelcomeReply(
     return '';
   }
 
-  const prompt =
-    `<s>[INST] You are a friendly and warm host of a guestbook. ` +
-    `When someone leaves a message, write a short, genuine, and welcoming reply (1-2 sentences max). ` +
-    `Be warm, personal, and reference what they said. Never use emojis. ` +
-    `Reply in the same language as the visitor message.\n\n` +
-    `${name} wrote: "${message}" [/INST]`;
-
   const response = await fetch(HF_API_URL, {
     method: 'POST',
     headers: {
@@ -27,12 +20,22 @@ export async function generateWelcomeReply(
       Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      inputs: prompt,
-      parameters: {
-        max_new_tokens: 100,
-        temperature: 0.7,
-        return_full_text: false,
-      },
+      model: HF_MODEL,
+      max_tokens: 100,
+      messages: [
+        {
+          role: 'system',
+          content:
+            'You are a friendly and warm host of a guestbook. ' +
+            'When someone leaves a message, write a short, genuine, and welcoming reply (1-2 sentences max). ' +
+            'Be warm, personal, and reference what they said. Never use emojis. ' +
+            'Reply in the same language as the visitor message.',
+        },
+        {
+          role: 'user',
+          content: `${name} wrote: "${message}"`,
+        },
+      ],
     }),
   });
 
@@ -42,11 +45,5 @@ export async function generateWelcomeReply(
   }
 
   const data = await response.json();
-
-  // HF returns an array of generated texts
-  const text: string = Array.isArray(data)
-    ? data[0]?.generated_text ?? ''
-    : data?.generated_text ?? '';
-
-  return text.trim();
+  return data.choices?.[0]?.message?.content?.trim() ?? '';
 }
