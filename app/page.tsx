@@ -1,5 +1,6 @@
 import GuestbookForm from '@/components/GuestbookForm';
 import MessageList from '@/components/MessageList';
+import AuthButton from '@/components/AuthButton';
 import { supabase, type Message } from '@/lib/supabase';
 
 async function getMessages(): Promise<Message[]> {
@@ -35,6 +36,11 @@ export default async function Home() {
           <p className="mt-2 text-base text-gray-500">
             Leave a message — say hi, share a thought, or just drop your name!
           </p>
+        </div>
+
+        {/* Auth button */}
+        <div className="mb-6 flex justify-end">
+          <AuthButton />
         </div>
 
         {/* Form */}

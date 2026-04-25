@@ -4,6 +4,19 @@ import { generateWelcomeReply } from '@/lib/cohere';
 
 export async function POST(req: NextRequest) {
   try {
+    // Check authentication
+    const authHeader = req.headers.get('authorization');
+    const token = authHeader?.replace('Bearer ', '');
+
+    let userEmail: string | null = null;
+    let userId: string | null = null;
+
+    if (token) {
+      const { data } = await supabase.auth.getUser(token);
+      userEmail = data.user?.email ?? null;
+      userId = data.user?.id ?? null;
+    }
+
     const body = await req.json();
     const { name, message } = body;
 
@@ -22,13 +35,17 @@ export async function POST(req: NextRequest) {
     }
 
     // Generate AI welcome reply via Cohere (non-blocking on failure)
-    const ai_reply = await generateWelcomeReply(name.trim(), message.trim()).catch(
-      () => ''
-    );
+    const ai_reply = await generateWelcomeReply(name.trim(), message.trim()).catch(() => '');
 
     const { data, error } = await supabase
       .from('messages')
-      .insert([{ name: name.trim(), message: message.trim(), ai_reply }])
+      .insert([{
+        name: name.trim(),
+        message: message.trim(),
+        ai_reply,
+        user_id: userId,
+        user_email: userEmail,
+      }])
       .select()
       .single();
 

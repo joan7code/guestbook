@@ -11,4 +11,6 @@ export type Message = {
   message: string;
   ai_reply: string | null;
   created_at: string;
+  user_id: string | null;
+  user_email: string | null;
 };
