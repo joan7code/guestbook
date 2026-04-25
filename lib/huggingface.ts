@@ -1,5 +1,5 @@
-// Using Hugging Face Inference API with Mistral-7B-Instruct
-const HF_MODEL = 'mistralai/Mistral-7B-Instruct-v0.3';
+// Using Hugging Face Inference API with Zephyr-7B
+const HF_MODEL = 'HuggingFaceH4/zephyr-7b-beta';
 const HF_API_URL = `https://router.huggingface.co/hf-inference/models/${HF_MODEL}/v1/chat/completions`;
 
 export async function generateWelcomeReply(
